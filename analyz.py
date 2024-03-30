@@ -16,9 +16,10 @@ from keras.layers import Dense
 from keras.layers import Dropout
 from keras.layers import Flatten 
 from keras.optimizers import Adam
-from keras.utils import np_utils
-from keras.layers.convolutional import Conv2D
-from keras.layers.convolutional import MaxPooling2D
+from tensorflow.keras.layers import Conv2D
+from tensorflow.keras.layers import MaxPooling2D
+from tensorflow.keras.utils import to_categorical
+from sklearn.preprocessing import OneHotEncoder
 
 
 df = pd.read_csv('dataset.csv')
@@ -76,6 +77,14 @@ X = df[features]
 y = df.drop(features, axis=1)['Target']
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=777, train_size=0.8)
+encoder = OneHotEncoder(sparse=False)
+y_train_encoded = encoder.fit_transform(y_train.values.reshape(-1, 1))
+y_test_encoded = encoder.transform(y_test.values.reshape(-1, 1))
+
+print("y_train_encoded:")
+print(y_train_encoded[:5])
+print("y_test_encoded:")
+print(y_test_encoded[:5])
 
 
 models = {'logistic_regression': LogisticRegression(),
@@ -91,6 +100,10 @@ for model_name, model in models.items():
     accuracy = accuracy_score(y_test, y_pred)
     print(f'{model_name}: {accuracy:.2f}') 
     
+y_train = to_categorical(y_train)
+
+
+'''
 model = Sequential()
 model.add(Conv2D(32, (5, 5), input_shape=(X_train.shape[1], X_train.shape[2], 1), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))    
@@ -102,11 +115,36 @@ model.add(Dense(128, activation='relu'))
 model.add(Dropout(0.5))
 model.add(Dense(10, activation='softmax'))
 
+model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=['accuracy'])
+
+model.fit(X_train, y_train, epochs=10, batch_size=200)
+'''
 
 
 
+'''MLP'''
+model = Sequential()
+model.add(Dense(64, input_dim=23, activation='relu'))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(16, activation='relu'))
+model.add(Dense(3, activation='softmax'))
 
+model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
+history = model.fit(X_train, y_train_encoded , epochs=5, batch_size=32)
+model.summary()
 
+loss, accuracy = model.evaluate(X_test, y_test_encoded)
+print(f"Accuracy: {accuracy * 100}%")
+
+'''Dense'''
+
+'''RNN'''
+
+'''LSTM'''
+
+'''Autoencoders'''
+
+'''GANs'''
 
 
     
