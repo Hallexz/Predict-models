@@ -22,6 +22,7 @@ from tensorflow.keras.utils import to_categorical
 from sklearn.preprocessing import OneHotEncoder
 
 
+
 df = pd.read_csv('dataset.csv')
 df = df.fillna(value=0)
 df = df.drop_duplicates()
@@ -100,33 +101,15 @@ for model_name, model in models.items():
     accuracy = accuracy_score(y_test, y_pred)
     print(f'{model_name}: {accuracy:.2f}') 
     
-y_train = to_categorical(y_train)
-
-
-'''
-model = Sequential()
-model.add(Conv2D(32, (5, 5), input_shape=(X_train.shape[1], X_train.shape[2], 1), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))    
-model.add(Conv2D(32, (3, 3), activation='relu'))
-model.add(MaxPooling2D(pool_size=(2, 2)))
-model.add(Dropout(0.5))
-model.add(Flatten())
-model.add(Dense(128, activation='relu'))
-model.add(Dropout(0.5))
-model.add(Dense(10, activation='softmax'))
-
-model.compile(loss='categorical_crossentropy', optimizer=Adam(), metrics=['accuracy'])
-
-model.fit(X_train, y_train, epochs=10, batch_size=200)
-'''
 
 
 
-'''MLP'''
 model = Sequential()
 model.add(Dense(64, input_dim=23, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(16, activation='relu'))
+model.add(Dense(8, activation='relu'))
+model.add(Dense(4, activation='relu'))
 model.add(Dense(3, activation='softmax'))
 
 model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
@@ -136,15 +119,7 @@ model.summary()
 loss, accuracy = model.evaluate(X_test, y_test_encoded)
 print(f"Accuracy: {accuracy * 100}%")
 
-'''Dense'''
 
-'''RNN'''
-
-'''LSTM'''
-
-'''Autoencoders'''
-
-'''GANs'''
 
 
     
