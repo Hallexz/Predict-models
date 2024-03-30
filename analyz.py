@@ -2,8 +2,15 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
+from keras.models import Sequential
+from keras.layers import Dense
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.pipeline import Pipeline
+from sklearn.decomposition import PCA
+import numpy as np
+import os
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
@@ -11,15 +18,13 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import GradientBoostingClassifier
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import Dropout
-from keras.layers import Flatten 
-from keras.optimizers import Adam
-from tensorflow.keras.layers import Conv2D
-from tensorflow.keras.layers import MaxPooling2D
-from tensorflow.keras.utils import to_categorical
-from sklearn.preprocessing import OneHotEncoder
+
+
+from sklearn.cluster import KMeans
+
+
+
+
 
 
 
@@ -88,18 +93,7 @@ print("y_test_encoded:")
 print(y_test_encoded[:5])
 
 
-models = {'logistic_regression': LogisticRegression(),
-          'svm': SVC(),
-          'decision_tree': DecisionTreeClassifier(),
-          'random_forest': RandomForestClassifier(),
-          'GNB': GaussianNB(),
-          'gradient_boosting': GradientBoostingClassifier()}
 
-for model_name, model in models.items():
-    model.fit(X_train, y_train)
-    y_pred = model.predict(X_test)
-    accuracy = accuracy_score(y_test, y_pred)
-    print(f'{model_name}: {accuracy:.2f}') 
     
 
 
@@ -118,7 +112,6 @@ model.summary()
 
 loss, accuracy = model.evaluate(X_test, y_test_encoded)
 print(f"Accuracy: {accuracy * 100}%")
-
 
 
 
