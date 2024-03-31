@@ -39,7 +39,7 @@ def perform_pca(df, n_components=2):
     similar_columns = my_pca.fit(df)
     explained_variance_ratio = my_pca.get_explained_variance_ratio()
     print(f'Explained variance ratio: {explained_variance_ratio}')
-    return my_pca, similar_columns
+    return similar_columns, explained_variance_ratio
 
 def y_data(df):
     kmeans = KMeans(n_clusters=2, random_state=0).fit(df)
@@ -79,19 +79,6 @@ for file in csv_files:
     categorical_columns = df.select_dtypes(exclude=[np.number]).columns.tolist()
     X_train, X_test, y_train, y_test = preprocess_and_split(df, y, numerical_columns, categorical_columns)
     dataframes[file] = (X_train, X_test, y_train, y_test)
-
-def plot_pca_explained_variance_ratio(my_pca, similar_columns):
-    explained_variance_ratio = my_pca.get_explained_variance_ratio()
-    print(f'explained_variance_ratio: {explained_variance_ratio}')  # Debug print
-    plt.figure(figsize=(10, 5))
-    plt.plot(range(1, len(explained_variance_ratio) + 1), np.cumsum(explained_variance_ratio))
-    plt.title('Cumulative Explained Variance')
-    plt.xlabel('Number of Components')
-    plt.ylabel('Cumulative Explained Variance')
-    plt.show()
-
-    for col1, col2 in similar_columns:  # Corrected here
-        print(f"Similar columns: {col1}, {col2}")
 
 models = {'logistic_regression': LogisticRegression(),
           'svm': SVC(),

@@ -6,7 +6,7 @@ import numpy as np
 
 class mypca:
     def __init__(self, n_components=10):
-        self.pca = PCA(n_components=n_components)
+        self.pca = PCA(n_components=None)
         self.similar_columns = []
         self.accuracy = None
         
@@ -23,6 +23,7 @@ class mypca:
 
     def get_explained_variance_ratio(self):
         return self.explained_variance_ratio_
+
 
 class mykmeans:
     def __init__(self, n_clusters=None, random_state=0):
