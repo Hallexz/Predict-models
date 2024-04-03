@@ -1,5 +1,5 @@
 import sys
-sys.path.insert(0, 'Predict-students/src/eda.py')
+sys.path.insert(0, '/Predict-students/src/eda.py')
 
 import unittest
 
