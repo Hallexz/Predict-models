@@ -3,7 +3,7 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 import numpy as np
 
-
+'''
 class mypca:
     def __init__(self, n_components=10):
         self.pca = PCA(n_components=n_components)
@@ -44,3 +44,4 @@ class mykmeans:
             df[col1] = df[col1] + df[col2].median(axis=1)
             df = df.drop(columns=col2)
         return df
+'''

@@ -18,14 +18,13 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import GradientBoostingClassifier
-from alg_eda import mypca, mykmeans
+#from alg_eda import mypca, mykmeans
 from sklearn.linear_model import LogisticRegression
 
 
 from sklearn.cluster import KMeans
 
-def process_data(filename):
-    df = pd.read_csv(filename)
+def process_data(df):
     df = df.fillna(value=0)
     df = df.drop_duplicates()
     df = df.apply(pd.to_numeric, errors='coerce')
@@ -33,7 +32,7 @@ def process_data(filename):
     df = df.fillna(0)
     df = df.astype('float64')
     return df
-
+'''
 def perform_pca(df, n_components=2):
     my_pca = mypca(n_components=n_components)
     similar_columns = my_pca.fit(df)
@@ -109,7 +108,7 @@ for file, (X_train, X_test, y_train, y_test) in dataframes.items():
         print(f'{model_name}: {accuracy:.2f}') 
 
 
-'''
+
 
 
 df = pd.read_csv('dataset.csv')
@@ -198,10 +197,9 @@ loss, accuracy = model.evaluate(X_test, y_test_encoded)
 print(f"Accuracy: {accuracy * 100}%")
 
 
+
+    
+    
 '''
-    
-    
-
-
 
 
