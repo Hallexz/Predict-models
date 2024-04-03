@@ -1,4 +1,4 @@
-name: Python Package using Conda
+name: Python Package 
 
 on: [push]
 
@@ -22,8 +22,7 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     - name: Test with pytest
       run: |
-        pip install unittest
-        unittest tests/
+        python -m unittest discover tests/
         
   build-windows:
     runs-on: windows-latest
@@ -43,8 +42,7 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     - name: Test with pytest
       run: |
-        pip install unittest
-        unittest tests/
+        python -m unittest discover tests/
 
   build-macos:
     runs-on: macos-latest
@@ -64,5 +62,5 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
     - name: Test with pytest
       run: |
-        pip3 install unittest
-        unittest tests/
+        python -m unittest discover tests/
+
