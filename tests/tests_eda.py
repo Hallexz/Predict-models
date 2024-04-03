@@ -1,13 +1,10 @@
-import sys
-sys.path.insert(0, '/Predict-students/src/eda.py')
-
 import unittest
 
 import pandas as pd
 import numpy as np
 import os
 
-from eda import process_data
+from src.eda import process_data
 
 class TestDataProcessing(unittest.TestCase):
     def setUp(self):
