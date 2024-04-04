@@ -1,14 +1,12 @@
 import unittest
 
 import pandas as pd
-import numpy as np
-import os
 
-from src.eda import process_data
+from eda import process_data
 
 class TestDataProcessing(unittest.TestCase):
     def setUp(self):
-        self.df = pd.read_csv("tests/data/nasa.csv")
+        self.df = pd.read_csv('data/nasa.csv')
 
     def test_remove_duplicates(self):
         df = process_data(self.df)
@@ -22,6 +20,9 @@ class TestDataProcessing(unittest.TestCase):
         df = process_data(self.df)
         self.assertTrue((df.dtypes == 'float64').all(), "Обработанный dataframe имеет нечисловые значения")
 
+    def test_no_object_dtype(self):
+        df = process_data(self.df)
+        self.assertFalse((df.dtypes == 'object').any(), "Обработанный dataframe имеет столбцы с типом 'object'")
 
-if __name__ == '__main__':
+if name == 'main':
     unittest.main()
