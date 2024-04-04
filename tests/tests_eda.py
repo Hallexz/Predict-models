@@ -6,7 +6,7 @@ from src.eda import process_data
 
 class TestDataProcessing(unittest.TestCase):
     def setUp(self):
-        self.df = pd.read_csv('/src/data/nasa.csv')
+        self.df = pd.read_csv('/tests/data/nasa.csv')
 
     def test_remove_duplicates(self):
         df = process_data(self.df)
