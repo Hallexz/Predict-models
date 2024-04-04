@@ -18,8 +18,9 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import GradientBoostingClassifier
-#from alg_eda import mypca, mykmeans
+from alg_eda import mypca, mykmeans
 from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import LabelEncoder
 
 
 from sklearn.cluster import KMeans
