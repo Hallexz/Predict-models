@@ -3,9 +3,15 @@ from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 import numpy as np
 
-'''
+
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from sklearn.metrics import mean_squared_error
+import numpy as np
+
 class mypca:
-    def __init__(self, n_components=10):
+    def init(self, n_components=10):
         self.pca = PCA(n_components=n_components)
         self.similar_columns = []
         self.accuracy = None
@@ -21,11 +27,26 @@ class mypca:
                     self.similar_columns.append((df.columns[i], df.columns[j]))
         return self.similar_columns if self.similar_columns else []
 
+    def transform(self, df):
+        return self.pca.transform(df)
+
+    def inverse_transform(self, df):
+        return self.pca.inverse_transform(df)
+
+    def calculate_accuracy(self, original_df, transformed_df):
+        inverse_transformed_df = self.inverse_transform(transformed_df)
+        self.accuracy = mean_squared_error(original_df, inverse_transformed_df)
+
     def get_explained_variance_ratio(self):
         return self.explained_variance_ratio_
 
+    def get_accuracy(self):
+        return self.accuracy
+
+
+
 class mykmeans:
-    def __init__(self, n_clusters=None, random_state=0):
+    def init(self, n_clusters=None, random_state=0):
         self.kmeans = KMeans(n_clusters=n_clusters if n_clusters is not None else 8, random_state=random_state)
         self.labels_ = None
         self.silhouette_score_ = None
@@ -44,4 +65,3 @@ class mykmeans:
             df[col1] = df[col1] + df[col2].median(axis=1)
             df = df.drop(columns=col2)
         return df
-'''
