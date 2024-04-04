@@ -27,12 +27,16 @@ from sklearn.cluster import KMeans
 def process_data(df):
     df = df.fillna(value=0)
     df = df.drop_duplicates()
-    df = df.apply(pd.to_numeric, errors='coerce')
-    df = df.dropna(how='all')
-    df = df.fillna(0)
+    
+    le = LabelEncoder()
+    
+    for col in df.columns:
+        if df[col].dtype == 'object':
+            df[col] = le.fit_transform(df[col])
     df = df.astype('float64')
     return df
-'''
+
+
 def perform_pca(df, n_components=2):
     my_pca = mypca(n_components=n_components)
     similar_columns = my_pca.fit(df)
@@ -45,6 +49,7 @@ def y_data(df):
     y = kmeans.labels_
     return y
 
+'''
 def merge_similar_columns(self, df, similar_columns):
     for col1, col2 in similar_columns:
         df[col1] = df[col1] + df[col2].median()  # Corrected here
