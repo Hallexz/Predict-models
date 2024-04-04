@@ -24,5 +24,5 @@ class TestDataProcessing(unittest.TestCase):
         df = process_data(self.df)
         self.assertFalse((df.dtypes == 'object').any(), "Обработанный dataframe имеет столбцы с типом 'object'")
 
-if name == 'main':
+if __name__ == '__main__':
     unittest.main()
