@@ -2,7 +2,7 @@ import unittest
 
 import pandas as pd
 
-from eda import process_data
+from src.eda import process_data
 
 class TestDataProcessing(unittest.TestCase):
     def setUp(self):
