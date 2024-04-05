@@ -5,6 +5,7 @@ import numpy as np
 
 from src.alg_eda import mypca, mykmeans
 
+
 class TestMyPCA(unittest.TestCase):
     def setUp(self):
         self.mypca = mypca(n_components=2)
