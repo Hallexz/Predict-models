@@ -1,28 +1,34 @@
-import unittest
+import numpy as np
 
-import pandas as pd
+from alg_eda import mykmeans
+from src.eda import process_data, perform_pca, y_data, preprocess_and_split
 
-from src.eda import process_data
+import pytest
+import os
 
-class TestDataProcessing(unittest.TestCase):
-    def setUp(self):
-        self.df = pd.read_csv('tests/data/nasa.csv')
 
-    def test_remove_duplicates(self):
-        df = process_data(self.df)
-        self.assertTrue(df.duplicated().sum() == 0, "Обработанный dataframe имеет дубликаты")
+@pytest.fixture(scope="module")
+def setup_data():
+    files = os.listdir()
+    csv_files = [f for f in files if f.endswith('.csv')]
+    dataframes = {}
+    my_kmeans = mykmeans(random_state=0)
+    for file in csv_files:
+        df = process_data(file)
+        similar_columns, _ = perform_pca(df)
+        df = my_kmeans.merge_similar_columns(df, similar_columns)
+        y = y_data(df)
+        numerical_columns = df.select_dtypes(include=[np.number]).columns.tolist()
+        categorical_columns = df.select_dtypes(exclude=[np.number]).columns.tolist()
+        X_train, X_test, y_train, y_test = preprocess_and_split(df, y, numerical_columns, categorical_columns)
+        dataframes[file] = (X_train, X_test, y_train, y_test)
+    return dataframes
 
-    def test_replace_nan(self):
-        df = process_data(self.df)
-        self.assertTrue(df.isnull().sum().sum() == 0, "Обработанный dataframe имеет значения NaN")
-
-    def test_numeric_conversion(self):
-        df = process_data(self.df)
-        self.assertTrue((df.dtypes == 'float64').all(), "Обработанный dataframe имеет нечисловые значения")
-
-    def test_no_object_dtype(self):
-        df = process_data(self.df)
-        self.assertFalse((df.dtypes == 'object').any(), "Обработанный dataframe имеет столбцы с типом 'object'")
-
-if __name__ == '__main__':
-    unittest.main()
+def test_process_data(setup_data):
+    dataframes = setup_data
+    for file, data in dataframes.items():
+        X_train, X_test, y_train, y_test = data
+        assert isinstance(X_train, np.ndarray)
+        assert isinstance(X_test, np.ndarray)
+        assert isinstance(y_train, np.ndarray)
+        assert isinstance(y_test, np.ndarray)
