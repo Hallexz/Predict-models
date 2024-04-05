@@ -25,7 +25,7 @@ from sklearn.preprocessing import LabelEncoder
 
 from sklearn.cluster import KMeans
 
-def process_data(df):
+ddef process_data(df):
     df = df.fillna(value=0)
     df = df.drop_duplicates()
     
@@ -50,12 +50,14 @@ def y_data(df):
     y = kmeans.labels_
     return y
 
-'''
+
 def merge_similar_columns(self, df, similar_columns):
     for col1, col2 in similar_columns:
-        df[col1] = df[col1] + df[col2].median()  # Corrected here
+        df[col1] = df[col1] + df[col2].median()  
         df = df.drop(columns=col2)
     return df
+
+
 
 def preprocess_and_split(df, y, numerical_columns, categorical_columns, test_size=0.2):  # y should be passed as an argument
     preprocessor = ColumnTransformer(
@@ -67,13 +69,11 @@ def preprocess_and_split(df, y, numerical_columns, categorical_columns, test_siz
     X_train, X_test, y_train, y_test = train_test_split(X_processed, y, test_size=test_size, random_state=42)
     return X_train, X_test, y_train, y_test
 
-
 files = os.listdir()
 csv_files = [f for f in files if f.endswith('.csv')]
-
 dataframes = {}
-
 my_kmeans = mykmeans(random_state=0)
+
 
 for file in csv_files:
     df = process_data(file)
@@ -85,38 +85,8 @@ for file in csv_files:
     X_train, X_test, y_train, y_test = preprocess_and_split(df, y, numerical_columns, categorical_columns)
     dataframes[file] = (X_train, X_test, y_train, y_test)
 
-def plot_pca_explained_variance_ratio(my_pca, similar_columns):
-    explained_variance_ratio = my_pca.get_explained_variance_ratio()
-    print(f'explained_variance_ratio: {explained_variance_ratio}')  # Debug print
-    plt.figure(figsize=(10, 5))
-    plt.plot(range(1, len(explained_variance_ratio) + 1), np.cumsum(explained_variance_ratio))
-    plt.title('Cumulative Explained Variance')
-    plt.xlabel('Number of Components')
-    plt.ylabel('Cumulative Explained Variance')
-    plt.show()
 
-    for col1, col2 in similar_columns:  # Corrected here
-        print(f"Similar columns: {col1}, {col2}")
-
-models = {'logistic_regression': LogisticRegression(),
-          'svm': SVC(),
-          'decision_tree': DecisionTreeClassifier(),
-          'random_forest': RandomForestClassifier(),
-          'GNB': GaussianNB(),
-          'gradient_boosting': GradientBoostingClassifier()}
-
-for file, (X_train, X_test, y_train, y_test) in dataframes.items():
-    print(f"Processing {file}")
-    for model_name, model in models.items():
-        model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
-        accuracy = accuracy_score(y_test, y_pred)
-        print(f'{model_name}: {accuracy:.2f}') 
-
-
-
-
-
+'''
 df = pd.read_csv('dataset.csv')
 df = df.fillna(value=0)
 df = df.drop_duplicates()
