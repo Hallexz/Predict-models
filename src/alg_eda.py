@@ -11,7 +11,7 @@ from sklearn.metrics import mean_squared_error
 import numpy as np
 
 class mypca:
-    def init(self, n_components=10):
+    def __init__(self, n_components=10):
         self.pca = PCA(n_components=n_components)
         self.similar_columns = []
         self.accuracy = None
@@ -46,7 +46,7 @@ class mypca:
 
 
 class mykmeans:
-    def init(self, n_clusters=None, random_state=0):
+    def __init__(self, n_clusters=None, random_state=0):
         self.kmeans = KMeans(n_clusters=n_clusters if n_clusters is not None else 8, random_state=random_state)
         self.labels_ = None
         self.silhouette_score_ = None
