@@ -25,8 +25,8 @@ from sklearn.preprocessing import LabelEncoder
 
 from sklearn.cluster import KMeans
 
-ddef process_data(df):
-    df = df.fillna(value=0)
+def process_data(df):
+   df = df.fillna(value=0)
     df = df.drop_duplicates()
     
     le = LabelEncoder()
