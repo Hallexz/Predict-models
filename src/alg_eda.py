@@ -10,6 +10,18 @@ from sklearn.metrics import silhouette_score
 from sklearn.metrics import mean_squared_error
 import numpy as np
 
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+import numpy as np
+
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+from sklearn.metrics import mean_squared_error
+import numpy as np
+
+
 class mypca:
     def __init__(self, n_components=10):
         self.pca = PCA(n_components=n_components)
