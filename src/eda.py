@@ -27,47 +27,47 @@ from sklearn.cluster import KMeans
 
 def process_data(df):
    df = df.fillna(value=0)
-    df = df.drop_duplicates()
+   df = df.drop_duplicates()
     
-    le = LabelEncoder()
+   le = LabelEncoder()
     
-    for col in df.columns:
-        if df[col].dtype == 'object':
-            df[col] = le.fit_transform(df[col])
-    df = df.astype('float64')
-    return df
+   for col in df.columns:
+      if df[col].dtype == 'object':
+         df[col] = le.fit_transform(df[col])
+   df = df.astype('float64')
+   return df
 
 
 def perform_pca(df, n_components=2):
-    my_pca = mypca(n_components=n_components)
-    similar_columns = my_pca.fit(df)
-    explained_variance_ratio = my_pca.get_explained_variance_ratio()
-    print(f'Explained variance ratio: {explained_variance_ratio}')
-    return my_pca, similar_columns
+   my_pca = mypca(n_components=n_components)
+   similar_columns = my_pca.fit(df)
+   explained_variance_ratio = my_pca.get_explained_variance_ratio()
+   print(f'Explained variance ratio: {explained_variance_ratio}')
+   return my_pca, similar_columns
 
 def y_data(df):
-    kmeans = KMeans(n_clusters=2, random_state=0).fit(df)
-    y = kmeans.labels_
-    return y
+   kmeans = KMeans(n_clusters=2, random_state=0).fit(df)
+   y = kmeans.labels_
+   return y
 
 
 def merge_similar_columns(self, df, similar_columns):
-    for col1, col2 in similar_columns:
-        df[col1] = df[col1] + df[col2].median()  
-        df = df.drop(columns=col2)
-    return df
+   for col1, col2 in similar_columns:
+      df[col1] = df[col1] + df[col2].median()  
+      df = df.drop(columns=col2)
+   return df
 
 
 
 def preprocess_and_split(df, y, numerical_columns, categorical_columns, test_size=0.2):  # y should be passed as an argument
-    preprocessor = ColumnTransformer(
-        transformers = [
-            ('num', StandardScaler(), numerical_columns),
-            ('cat', OneHotEncoder(), categorical_columns)])
-    pipeline = Pipeline(steps=[('preprocessor', preprocessor)])
-    X_processed = pipeline.fit_transform(df)
-    X_train, X_test, y_train, y_test = train_test_split(X_processed, y, test_size=test_size, random_state=42)
-    return X_train, X_test, y_train, y_test
+   preprocessor = ColumnTransformer(
+      transformers = [
+         ('num', StandardScaler(), numerical_columns),
+         ('cat', OneHotEncoder(), categorical_columns)])
+   pipeline = Pipeline(steps=[('preprocessor', preprocessor)])
+   X_processed = pipeline.fit_transform(df)
+   X_train, X_test, y_train, y_test = train_test_split(X_processed, y, test_size=test_size, random_state=42)
+   return X_train, X_test, y_train, y_test
 
 files = os.listdir()
 csv_files = [f for f in files if f.endswith('.csv')]
@@ -76,14 +76,14 @@ my_kmeans = mykmeans(random_state=0)
 
 
 for file in csv_files:
-    df = process_data(file)
-    similar_columns, _ = perform_pca(df)  # Changed here
-    df = my_kmeans.merge_similar_columns(df, similar_columns)  # Now similar_columns is available
-    y = y_data(df)
-    numerical_columns = df.select_dtypes(include=[np.number]).columns.tolist()
-    categorical_columns = df.select_dtypes(exclude=[np.number]).columns.tolist()
-    X_train, X_test, y_train, y_test = preprocess_and_split(df, y, numerical_columns, categorical_columns)
-    dataframes[file] = (X_train, X_test, y_train, y_test)
+   df = process_data(file)
+   similar_columns, _ = perform_pca(df)  # Changed here
+   df = my_kmeans.merge_similar_columns(df, similar_columns)  # Now similar_columns is available
+   y = y_data(df)
+   numerical_columns = df.select_dtypes(include=[np.number]).columns.tolist()
+   categorical_columns = df.select_dtypes(exclude=[np.number]).columns.tolist()
+   X_train, X_test, y_train, y_test = preprocess_and_split(df, y, numerical_columns, categorical_columns)
+   dataframes[file] = (X_train, X_test, y_train, y_test)
 
 
 '''
