@@ -27,28 +27,38 @@ jobs:
         run: |
           pytest tests/
       - name: Build distribution
-        if: success()
         run: |
           python setup.py sdist bdist_wheel
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: linux-build
-          path: dist/
+          path: dist/*.whl  # Upload only wheel files
+
   deploy-ec2:
     needs: build-linux
     runs-on: ubuntu-latest
     steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-build
+
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST }}
+          host: ${{ secrets.EC2_HOSTNAME }}  # More descriptive name
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd /path/to/deployment/directory
+
+            # Download the archive from S3
             aws s3 cp s3://your-bucket/linux-build.tar.gz .
-            tar -xzvf linux-build.tar.gz
-            pip install .
-            # Start your application (add relevant commands)
+
+            # Extract the wheel file
+            wheel_file=$(find . -name "*.whl")
+
+            # Install the wheel file
+            pip install "$wheel_file"
         
