@@ -6,6 +6,6 @@ setup(
     description="A simple Python package",
     author="Your Name",
     author_email="yevtefeevah@gmail.com",
-    packages=["algg", "alg_eda", "eda"],
+    packages=["src/algg", "src/alg_eda", "src/eda"],
     install_requires=["numpy", "pandas", "scikit-learn", "tensorflow", "keras", "matplotlib", "seaborn"],
 )
