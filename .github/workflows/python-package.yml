@@ -1,28 +1,54 @@
-name: Python Package 
+name: Python Package
+
 on: [push]
 
 jobs:
   build-linux:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y python3-pip
-        pip install -r requirements.txt
-    - name: Lint with flake8
-      run: |
-        pip install flake8
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-    - name: Install pytest
-      run: |
-        pip install pytest
-    - name: Test with pytest
-      run: |
-        pytest tests/
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip install -r requirements.txt
+      - name: Lint with flake8
+        run: |
+          pip install flake8
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+      - name: Install pytest
+        run: |
+          pip install pytest
+      - name: Test with pytest
+        run: |
+          pytest tests/
+      - name: Build distribution
+        if: success()
+        run: |
+          python setup.py sdist bdist_wheel
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-build
+          path: dist/
+  deploy-ec2:
+    needs: build-linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_KEY }}
+          script: |
+            cd /path/to/deployment/directory
+            aws s3 cp s3://your-bucket/linux-build.tar.gz .
+            tar -xzvf linux-build.tar.gz
+            pip install .
+            # Start your application (add relevant commands)
         
