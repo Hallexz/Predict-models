@@ -47,18 +47,14 @@ jobs:
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOSTNAME }}  # More descriptive name
+          host: ${{ secrets.EC2_HOSTNAME }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_KEY }}
           script: |
             cd /path/to/deployment/directory
 
-            # Download the archive from S3
-            aws s3 cp s3://your-bucket/linux-build.tar.gz .
-
-            # Extract the wheel file
-            wheel_file=$(find . -name "*.whl")
+            # Download the wheel file directly from artifacts
+            wget https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/downloads/linux-build.whl
 
             # Install the wheel file
-            pip install "$wheel_file"
-        
+            pip install linux-build.whl
