@@ -34,27 +34,3 @@ jobs:
         with:
           name: linux-build
           path: dist/*.whl  # Upload only wheel files
-
-  deploy-ec2:
-    needs: build-linux
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: linux-build
-
-      - name: Deploy to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOSTNAME }}
-          username: ${{ secrets.EC2_USERNAME }}
-          key: ${{ secrets.EC2_KEY }}
-          script: |
-            cd /path/to/deployment/directory
-
-            # Download the wheel file directly from artifacts
-            wget https://github.com/${{ github.repository }}/actions/artifacts/${{ github.run_id }}/downloads/linux-build.whl
-
-            # Install the wheel file
-            pip install linux-build.whl
