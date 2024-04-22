@@ -12,6 +12,23 @@ from sklearn.cluster import MiniBatchKMeans
 from scipy.stats import pearsonr
 
 
+import pandas as pd
+import numpy as np
+import os
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.compose import ColumnTransformer
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.pipeline import Pipeline
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import LabelEncoder
+from sklearn.cluster import MiniBatchKMeans
+from scipy.stats import pearsonr
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier, VotingClassifier
+from sklearn.tree import DecisionTreeClassifier
+
+
 def process_data(df):
     df = df.fillna(value=0)
     df = df.drop_duplicates()
@@ -60,6 +77,7 @@ def preprocess_and_split(df, y, numerical_columns, categorical_columns, test_siz
     X_train, X_test, y_train, y_test = train_test_split(X_processed, y, test_size=test_size, random_state=42)
     return X_train, X_test, y_train, y_test
 
+
 def find_csv_files(directory_path='/data/raw/'):
     csv_files = []
     for root, directories, filenames in os.walk(directory_path):
@@ -67,7 +85,7 @@ def find_csv_files(directory_path='/data/raw/'):
             if filename.endswith('.csv'):
                 full_path = os.path.join(root, filename)
                 csv_files.append(full_path)
-                return csv_files
+    return csv_files
 
 
 def get_categorical_and_numerical_columns(df):
@@ -97,6 +115,7 @@ def visualize_pca(my_pca):
 
 def process_and_analyze_all_datasets(directory_path='/data/raw/'):
     csv_files = find_csv_files(directory_path)
+    X_train = X_test = y_train = y_test = None  # Initialize the variables
 
     for csv_file in csv_files:
         df = pd.read_csv(csv_file)
@@ -104,19 +123,44 @@ def process_and_analyze_all_datasets(directory_path='/data/raw/'):
         df = process_data(df)
         my_pca, explained_variance_ratio = perform_pca(df)
         y = y_data(df)
-        numerical_columns = df.select_dtypes(include=[np.number]).columns.tolist()
-        categorical_columns = df.select_dtypes(exclude=[np.number]).columns.tolist()
+        
+        if y is not None:
+            numerical_columns = df.select_dtypes(include=[np.number]).columns.tolist()
+            categorical_columns = df.select_dtypes(exclude=[np.number]).columns.tolist()
+            X_train, X_test, y_train, y_test = preprocess_and_split(df, y, numerical_columns, categorical_columns)
+            visualize_pca(my_pca)
+        else:
+            print("y is None. Skipping preprocessing, splitting, and visualization.")
+
+    return X_train, X_test, y_train, y_test
+        
+X_train, X_test, y_train, y_test = process_and_analyze_all_datasets()
+
+
+def main():
+    csv_file_path = '/data/raw/'
+
+    if os.path.exists(csv_file_path):
+        df = pd.read_csv(csv_file_path)
+        df = process_data(df)
+        y = y_data(df)
+        numerical_columns, categorical_columns = get_categorical_and_numerical_columns(df)
         X_train, X_test, y_train, y_test = preprocess_and_split(df, y, numerical_columns, categorical_columns)
 
-        visualize_pca(my_pca)
+        if y_train is not None and y_test is not None:
+            model1 = DecisionTreeClassifier()
+            model2 = RandomForestClassifier(n_estimators=100)  
 
-        from sklearn.tree import DecisionTreeClassifier
-        clf = DecisionTreeClassifier()
-        clf.fit(X_train, y_train)
+            ensemble_model = VotingClassifier(estimators=[('dt', model1), ('rf', model2)], voting='soft')
+            ensemble_model.fit(X_train, y_train)
+            evaluate_model(ensemble_model, X_test, y_test)
+        else:
+            print("y_train or y_test is None. Skipping model training and evaluation.")
+    else:
+        print(f"CSV file not found: {csv_file_path}")
 
-        accuracy = clf.score(X_test, y_test)
-        print(f"Accuracy on test set: {accuracy:.2f}")
-
+if __name__ == "__main__":
+    main()
 
 
     
