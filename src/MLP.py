@@ -1,33 +1,46 @@
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout, Flatten
-from tensorflow.keras.layers import Conv2D, MaxPool2D
 from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+from keras.utils import to_categorical
+import pandas as pd
+import glob
+import os
 
 
-class FeedForwardNN(BaseEstimator, TransformerMixin):  
-    def __init__(self, input_dim, num_classes):
-        self.model = self.build_model(input_dim, num_classes)
-
-    def build_model(self, input_dim, num_classes):
-        model = Sequential()
-        model.add(Dense(128, activation='relu', input_shape=(input_dim,)))  
-        model.add(Dropout(0.25))
-        model.add(Dense(64, activation='relu'))
-        model.add(Dropout(0.2))
-        model.add(Dense(num_classes, activation='softmax'))
-        model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-        return model
-
+class ProcessData(BaseEstimator, TransformerMixin):
     def fit(self, X, y=None):
-        self.model.fit(X, y, epochs=10, batch_size=32, validation_split=0.2)
         return self
 
-    def predict(self, X):
-        return self.model.predict(X)
+    def transform(self, X, y=None):
+        X = X.dropna()
+        X = X[X.astype(str).ne(' ').all(axis=1)]
+        le = LabelEncoder()
+        for col in X.columns:
+            X[col] = le.fit_transform(X[col])
+        return X
 
-    def score(self, X, y):
-        loss, accuracy = self.model.evaluate(X, y)
-        print(f"Test Loss: {loss:.4f}, Test Accuracy: {accuracy:.4f}")
-        return accuracy
+
+def find_dataset(file_path):
+    return pd.read_csv(file_path)
+
+
+class DataPipeline:
+    def __init__(self, dataset_directory, process_data, find_dataset):
+        self.dataset_directory = dataset_directory
+        self.process_data = process_data
+        self.find_dataset = find_dataset
+
+    def process_data_pipeline(self):
+        csv_files = glob.glob(f"{self.dataset_directory}/*.csv")
+        processed_data = pd.concat([self.process_data(self.find_dataset(file)) for file in csv_files], ignore_index=True)
+
+        X = processed_data.drop('Target', axis=1)
+        y = processed_data['Target']
+
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+        y_train = to_categorical(y_train)
+        y_test = to_categorical(y_test)
+
+        return X_train, X_test, y_train, y_test
+
  
