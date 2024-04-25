@@ -1,21 +1,33 @@
-from keras.models import Sequential
-from keras.layers import Dense
+import tensorflow as tf
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Flatten
+from tensorflow.keras.layers import Conv2D, MaxPool2D
+from sklearn.base import BaseEstimator, TransformerMixin
 
-from analyz import X_train, X_test, y_train_encoded, y_test_encoded
 
+class FeedForwardNN(BaseEstimator, TransformerMixin):  
+    def __init__(self, input_dim, num_classes):
+        self.model = self.build_model(input_dim, num_classes)
 
-model = Sequential()
-model.add(Dense(64, input_dim=23, activation='relu'))
-model.add(Dense(32, activation='relu'))
-model.add(Dense(16, activation='relu'))
-model.add(Dense(8, activation='relu'))
-model.add(Dense(4, activation='relu'))
-model.add(Dense(3, activation='softmax'))
+    def build_model(self, input_dim, num_classes):
+        model = Sequential()
+        model.add(Dense(128, activation='relu', input_shape=(input_dim,)))  
+        model.add(Dropout(0.25))
+        model.add(Dense(64, activation='relu'))
+        model.add(Dropout(0.2))
+        model.add(Dense(num_classes, activation='softmax'))
+        model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        return model
 
-model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
-history = model.fit(X_train, y_train_encoded, epochs=5, batch_size=32)
-model.summary()
+    def fit(self, X, y=None):
+        self.model.fit(X, y, epochs=10, batch_size=32, validation_split=0.2)
+        return self
 
-loss, accuracy = model.evaluate(X_test, y_test_encoded)
-print(f"Accuracy: {accuracy * 100}%")
+    def predict(self, X):
+        return self.model.predict(X)
+
+    def score(self, X, y):
+        loss, accuracy = self.model.evaluate(X, y)
+        print(f"Test Loss: {loss:.4f}, Test Accuracy: {accuracy:.4f}")
+        return accuracy
 
