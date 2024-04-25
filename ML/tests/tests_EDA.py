@@ -6,7 +6,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from tensorflow.keras.utils import to_categorical
 
-from src.EDA import ProcessData, DataPipeline
+from ML.src.EDA import ProcessData, DataPipeline
 
 
 
