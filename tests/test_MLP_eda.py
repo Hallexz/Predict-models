@@ -1,10 +1,8 @@
-import pytest
+from sklearn.preprocessing import LabelEncoder
 import numpy as np
 import pandas as pd
-from sklearn.base import BaseEstimator, TransformerMixin
-from keras.models import Sequential
-from keras.layers import Dense, Dropout
 from sklearn.model_selection import train_test_split
+import pytest
 from src.MLP import FeedForwardNN  
 
 
@@ -12,9 +10,8 @@ data = {
     'Feature': ['Feature1', 'Feature2', 'Feature3', 'Feature4', 'Feature5'],
     'Label': ['Label1', 'Label2', 'Label1', 'Label2', 'Label1']
 }
-
-# Создайте DataFrame
 df = pd.DataFrame(data)
+
 
 le = LabelEncoder()
 df['Feature'] = le.fit_transform(df['Feature'])
@@ -28,6 +25,7 @@ y_train = np.array(y_train)
 @pytest.fixture
 def feed_forward_nn():
     return FeedForwardNN(input_dim=1, num_classes=2) 
+
 def test_feed_forward_nn(feed_forward_nn):
     feed_forward_nn.fit(X_train, y_train)
 
