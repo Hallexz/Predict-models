@@ -1,7 +1,7 @@
 from sklearn.pipeline import Pipeline
 
-from MLP import FeedForwardNN
-from EDA import ProcessData, find_dataset, DataPipeline
+from src.MLP import FeedForwardNN
+from src.EDA import ProcessData, find_dataset, DataPipeline
 
 
 
