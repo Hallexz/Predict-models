@@ -30,4 +30,4 @@ class FeedForwardNN(BaseEstimator, TransformerMixin):
         loss, accuracy = self.model.evaluate(X, y)
         print(f"Test Loss: {loss:.4f}, Test Accuracy: {accuracy:.4f}")
         return accuracy
-
+ 
