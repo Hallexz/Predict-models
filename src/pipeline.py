@@ -5,7 +5,7 @@ from EDA import ProcessData, find_dataset, DataPipeline
 
 
 
-dataset_directory = '/home/hallex/spyd/study/Predict-models/data/raw'
+dataset_directory = '/data/raw'
 pipeline = DataPipeline(dataset_directory, ProcessData().transform, find_dataset)
 X_train, X_test, y_train, y_test = pipeline.process_data_pipeline()
 
