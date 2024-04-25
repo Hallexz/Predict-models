@@ -41,7 +41,7 @@ def test_process_data_fit_returns_self(transformer):
     
 
 class DataPipeline:
-    def __init__(self, dataset_directory):
+    def init(self, dataset_directory):
         self.dataset_directory = dataset_directory
 
     def process_data(self, df):
