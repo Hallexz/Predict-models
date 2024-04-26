@@ -26,7 +26,7 @@ Tests, deployment, MLP in progress
 2. Go to the project directory: `cd Predict-models`
 3. Installing dependencies: `pip install -r requirements.txt`
 
-## Запуск приложения
+## Launching the application
 
 1. Starting the server: `uvicorn src.web_app:app --reload`
 2. Open in browser: `uvicorn app.app:app --host 0.0.0.0 --port 8080`
