@@ -33,4 +33,22 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: linux-build
-          path: dist/*.whl  # Upload only wheel files
+          path: dist/*.whl  
+
+    deploy:
+    needs: build-linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-build
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_HUB_USERNAME }}" --password-stdin
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/my-app .
+          docker push ${{ secrets.DOCKER_HUB_USERNAME }}/my-app
+      - name: Deploy to production
+        run: |
+          ssh user@your-server 'docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/ml-app && docker run -d -p 80:80 ${{ secrets.DOCKER_HUB_USERNAME }}/ml-app'
